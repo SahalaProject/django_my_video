@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>django celery</title>
+</head>
+<body>
+    <div style="text-align: center; font-size: 30px; margin-top: 30px">
+        <h1>🐏 django3 celery 不再使用django-celery 🐂</h1>
+        <a href="/">欢迎来到 django celery / RadditMQ/REDIS 最佳实践 😀</a>
+    </div>
+
+    <div>
+        {{ msg }}
+    </div>
+
+    <div style="margin-top: 40px; margin-left: 400px">
+    <h3 style="color: indianred">
+        定时任务列表: {{ task_list | length }}
+        <a style="color: #69e510; margin-left: 20px" href="add_time_task">新增定时</a>
+    </h3>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>名称</th>
+                <th>task</th>
+                <th>args</th>
+                <th>启用</th>
+                <th>最近运行时间</th>
+                <th>运行次数</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--td中style显示内容超长内容隐藏，和限制内容显示框大小-->
+            {% for task in task_list %}
+            <tr>
+                <td>{{ task.id }}</td>
+                <td style="color: #69e510">{{ task.name }}</td>
+                <td>{{ task.task }}</td>
+                <td>{{ task.args }}</td>
+                <td>{{ task.enabled }}</td>
+                <td>{{ task.last_run_at }}</td>
+                <td>{{ task.total_run_count }}</td>
+
+                <td>
+                    <a style="background-color: #E8E8E8;color: #69e510" href="update_time_task/{{ task.id }}/">切换启用</a>
+                    <a style="background-color: #E8E8E8;color: #69e510" href="run_async_task/{{ task.id }}/">异步运行</a>
+                    <a style="background-color: #E8E8E8;color: #d59412" href="delete/{{ task.id }}/">删除</a>
+{#                    <a style="background-color: #E8E8E8;color: #d59412" href="delete/{{ task.id }}/"#}
+{#                       onclick="{if(confirm('确定删除 {{ task.name }} 吗?')){this.document.formname.submit();return true;}return false;}">删除</a>#}
+                </td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+    </div>
+
+    <div style="margin-top: 50px; margin-left: 400px">
+    <h3 style="color: indianred">
+        celery 任务触发记录: {{ task_result_list | length }}
+        <a style="color: #d59412; margin-left: 20px" href="delete_all"
+            onclick="{if(confirm('确定清空吗?')){this.document.formname.submit();return true;}return false;}">清空</a>
+    </h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th>task_id</th>
+                <th>task_name</th>
+                <th>result</th>
+                <th>status</th>
+                <th>date_done</th>
+                <th>worker</th>
+                <th>traceback</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!--td中style显示内容超长内容隐藏，和限制内容显示框大小-->
+            {% for task_result in task_result_list %}
+            <tr>
+                <td>{{ task_result.task_id }}</td>
+                <td>{{ task_result.task_name }}</td>
+                <td style="color: #69e510; max-width: 300px;overflow: hidden; text-overflow:ellipsis;white-space: nowrap">{{ task_result.result }}</td>
+                <td>{{ task_result.status }}</td>
+                <td>{{ task_result.date_done }}</td>
+                <td>{{ task_result.worker }}</td>
+                <td style="max-width: 300px;overflow: hidden; text-overflow:ellipsis;white-space: nowrap">{{ task_result.traceback }}</td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+    </div>
+
+</body>
+</html>
